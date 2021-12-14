@@ -1,5 +1,4 @@
-# drtp
-A Disruption Resilient Transport Protocol (DRTP) for Synchrophasors Measurement in Transmission Grids
+# A Disruption Resilient Transport Protocol (DRTP) for Synchrophasors Measurement in Transmission Grids
 
  *********************************************************************************
 This work is licensed under CC BY-NC-SA 4.0
