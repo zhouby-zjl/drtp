@@ -17,17 +17,17 @@ A Disruption Resilient Transport Protocol (DRTP) for Synchrophasors Measurement 
  
  This software is the source code of the DRTP for the manuscript entitled with "A Disruption Resilient NDN Transport Protocol for Synchrophasors Measurement in Transmission Grids" submitted for the IEEE Internet-of-Things Journal.
  
-+ What is the DRTP? 
+## What is the DRTP? 
 The DRTP enables a resilient in-network retransmission to satisfy the high reliability and stringent realtimeness in the PMU data collection using protocols like in the IEEE 37.118.2 standard. It can perfectly sustain serious link disruptions with the 0\% end-to-end packet delivery failure rate and stringent low end-to-end packet delivery time.
 
-+ What is the status of the DRTP?
+## What is the status of the DRTP?
 The DRTP is currently in the prototype stage which is comprehensively tested under the IEEE 300 bus dataset with an extraordinary performance. We are looking forward to implement into a real router in the future.
 
-+ How do I run the source code?
+## How do I run the source code?
 First, you need to download both the DRTP from github and the recent ndnSIM from https://ndnsim.net/current/. 
 Second, simply copy all files of the DRTP to the ndnSIM folder in an override manner. 
 Third, you need to edit the drtp-config-static.ini file under the ndnSIM/ns-3 folder with the correct IEEE bus dataset path, the output log path and some simulation parameters. 
 Finally, cd ndnSIM/ns-3 && ./waf --run scratch/drtp-sim-static drtp-config-static.ini. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the drtp-config-static.ini file.
 
-+ What is the project currently supporting the development of the DRTP?
+## What is the project currently supporting the development of the DRTP?
 The DRTP is currently supported by the National Natural Science Foundation of China (62102375). We are looking forward to new project opportunity in making the DRTP growing up.
