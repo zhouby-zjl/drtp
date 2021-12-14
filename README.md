@@ -3,10 +3,12 @@
  *********************************************************************************
 This work is licensed under CC BY-NC-SA 4.0
 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
 Copyright (c) 2021 Boyang Zhou
 
 This file is a part of "Disruption Resilient Transport Protocol"
 (https://github.com/zhouby-zjl/drtp/).
+
 Written by Boyang Zhou (zhouby@zhejianglab.com)
 
 This software is protected by the patents numbered with PCT/CN2021/075891,
@@ -23,10 +25,11 @@ The DRTP enables a resilient in-network retransmission to satisfy the high relia
 The DRTP is currently in the prototype stage which is comprehensively tested under the IEEE 300 bus dataset with an extraordinary performance. We are looking forward to implement into a real router in the future.
 
 ## How do I run the source code?
-First, you need to download both the DRTP from github and the recent ndnSIM from https://ndnsim.net/current/. 
-Second, simply copy all files of the DRTP to the ndnSIM folder in an override manner. 
-Third, you need to edit the drtp-config-static.ini file under the ndnSIM/ns-3 folder with the correct IEEE bus dataset path, the output log path and some simulation parameters. 
-Finally, cd ndnSIM/ns-3 && ./waf --run scratch/drtp-sim-static drtp-config-static.ini. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the drtp-config-static.ini file.
+1. You need to download both the DRTP from github and the recent ndnSIM from https://ndnsim.net/current/. 
+2. Simply copy all files of the DRTP to the ndnSIM folder in an override manner. 
+3. You need to edit the drtp-config-static.ini file under the ndnSIM/ns-3 folder with the correct IEEE bus dataset path, the output log path and some simulation parameters. 
+4. cd ndnSIM/ns-3 && ./waf --run scratch/drtp-sim-static --command-template="%s drtp-config-static.ini". 
+5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the drtp-config-static.ini file.
 
 ## What is the project currently supporting the development of the DRTP?
 The DRTP is currently supported by the National Natural Science Foundation of China (62102375). We are looking forward to new project opportunity in making the DRTP growing up.
