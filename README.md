@@ -15,7 +15,7 @@ ZL202110344405.7 and ZL202110144836.9, as well as the software copyrights
 numbered with 2020SR1875227 and 2020SR1875228.
  **********************************************************************************
  
- This software is the source code of the DRTP for the manuscript entitled with "A Disruption Resilient NDN Transport Protocol for Synchrophasors Measurement in Transmission Grids" submitted for the IEEE Internet-of-Things Journal.
+ This software is the source code of the DRTP for the manuscript entitled with "A Disruption Resilient NDN Transport Protocol for Synchrophasors Measurement in Transmission Grids" that has been currently submitted to the IEEE Internet-of-Things Journal.
  
 ## What is the DRTP? 
 The DRTP enables a resilient in-network retransmission to satisfy the high reliability and stringent realtimeness in the PMU data collection using protocols like in the IEEE 37.118.2 standard. It can perfectly sustain serious link disruptions with the 0\% end-to-end packet delivery failure rate and stringent low end-to-end packet delivery time.
