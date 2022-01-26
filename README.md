@@ -32,4 +32,5 @@ The DRTP is currently in the prototype stage which is comprehensively tested und
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the drtp-config-static.ini file.
 
 =================================================================================================
+
 We are looking forward to new project opportunity in making the DRTP growing up. 
