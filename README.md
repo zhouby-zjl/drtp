@@ -31,5 +31,5 @@ The DRTP is currently in the prototype stage which is comprehensively tested und
 4. cd ndnSIM/ns-3 && ./waf --run scratch/drtp-sim-static --command-template="%s drtp-config-static.ini". 
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the drtp-config-static.ini file.
 
-## What is the project currently supporting the development of the DRTP?
-The DRTP is currently supported by the National Natural Science Foundation of China (62102375). We are looking forward to new project opportunity in making the DRTP growing up.
+=================================================================================================
+We are looking forward to new project opportunity in making the DRTP growing up. 
