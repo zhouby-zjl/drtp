@@ -4,25 +4,23 @@
 This work is licensed under CC BY-NC-SA 4.0
 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-Copyright (c) 2021 Boyang Zhou
+Copyright (c) 2021 zhouby-zjl @ github
 
 This file is a part of "Disruption Resilient Transport Protocol"
 (https://github.com/zhouby-zjl/drtp/).
 
-Written by Boyang Zhou (zhouby@zhejianglab.com)
+Written by zhouby-zjl @ github
 
-This software is protected by the patents numbered with PCT/CN2021/075891,
-ZL202110344405.7 and ZL202110144836.9, as well as the software copyrights
-numbered with 2020SR1875227 and 2020SR1875228.
+This software is protected by the patents as well as the software copyrights.
  **********************************************************************************
  
- This software is the source code of the DRTP for the manuscript entitled with "A Disruption Resilient NDN Transport Protocol for Synchrophasors Measurement in Transmission Grids" that has been currently submitted to the IEEE Internet-of-Things Journal.
+ This software is the source code of the DRTP for the manuscript entitled with "DRTP: A Disruption Resilient NDN Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids" that has been currently submitted to the IEEE Transactions on Industrial Informatics.
  
 ## What is the DRTP? 
-The DRTP enables a resilient in-network retransmission to satisfy the high reliability and stringent realtimeness in the PMU data collection using protocols like in the IEEE 37.118.2 standard. It can perfectly sustain serious link disruptions with the 0\% end-to-end packet delivery failure rate and stringent low end-to-end packet delivery time.
+In a modern transmission grid, the phasor measurement unit requires a reliable transport for its sampled statistics with an end-to-end failure rate (EEFR) as lower as possible to ensure the grid estimation accuracy. However, the EEFR can be deteroriated by packet losses caused by the multiple links disruptions for the primary forwarding path (PP). To address that, the DRTP enables the hop-by-hop retransmissions utilizing the plentiful redundant sub-paths (RSPs) available for the PP to increase reliability. The DRTP can take advantage in keeping the EEFR in 0% and is with the bounded end-to-end delivery time under serious links disruptions for typical transmission grids.
 
 ## What is the status of the DRTP?
-The DRTP is currently in the prototype stage which is comprehensively tested under the IEEE 300 bus dataset with an extraordinary performance. We are looking forward to implement into a real router in the future.
+The DRTP is currently in the prototype stage which is comprehensively tested under the IEEE 300 bus dataset with an sigfinicantly reduced EEFR performance. We are looking forward to implement into a real router in the future.
 
 ## How do I run the source code?
 1. You need to download both the DRTP from github and the recent ndnSIM from https://ndnsim.net/current/. 
