@@ -14,7 +14,6 @@ Written by zhouby-zjl @ github
 This software is protected by the patents as well as the software copyrights.
  **********************************************************************************
  
- This software is the source code of the DRTP for the manuscript entitled with "DRTP: A Disruption Resilient NDN Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids" that has been currently submitted to the IEEE Transactions on Industrial Informatics.
  
 ## What is the DRTP? 
 In a modern transmission grid, the phasor measurement unit requires a reliable transport for its sampled statistics with an end-to-end failure rate (EEFR) as lower as possible to ensure the grid estimation accuracy. However, the EEFR can be deteroriated by packet losses caused by the multiple links disruptions for the primary forwarding path (PP). To address that, the DRTP enables the hop-by-hop retransmissions utilizing the plentiful redundant sub-paths (RSPs) available for the PP to increase reliability. The DRTP can take advantage in keeping the EEFR in 0% and is with the bounded end-to-end delivery time under serious links disruptions for a typical case constructed according to a real transmission grid topology.
