@@ -26,8 +26,8 @@ The DRTP is currently in the prototype stage which is comprehensively tested und
 2. Simply copy all files of the DRTP to the ndnSIM folder in an override manner. 
 3. You need to edit the drtp-config-static.ini file under the ndnSIM/ns-3 folder with the correct IEEE bus dataset path, the output log path and some simulation parameters. 
 4. Run DRTP testers. First, cd ndnSIM/ns-3. Second, there are two types of tester with the route algorithms available below:
-   - a Dijkstra based algorithm. You can run: ./waf --run scratch/drtp-sim-static-dijkstra --command-template="%s drtp-config-dijkstra.ini". 
-   - An optimized resilient routes generation algorithm. You can run:  ./waf --run scratch/drtp-sim-static --command-template="%s drtp-config-static.ini". 
+   - a Dijkstra based algorithm to generate multi-path subgraph (GenMPSG). You can run: ./waf --run scratch/drtp-sim-static-dijkstra --command-template="%s drtp-config-dijkstra.ini". 
+   - An optimized resilient routes generation (RRG) algorithm. You can run:  ./waf --run scratch/drtp-sim-static --command-template="%s drtp-config-static.ini". 
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the above ini file.
 
  **********************************************************************************
