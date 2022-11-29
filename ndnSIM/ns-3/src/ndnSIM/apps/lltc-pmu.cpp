@@ -18,6 +18,7 @@
 #include "ns3/log.h"
 #include "ns3/simulator.h"
 #include "ns3/packet.h"
+#include "ns3/double.h"
 #include "ns3/random-variable-stream.h"
 #include "ns3/ndnSIM/ndn-cxx/lp/tags.hpp"
 
@@ -50,6 +51,14 @@ TypeId LltcPMUApp::GetTypeId() {
 void LltcPMUApp::setFreq(int freq) {
 	this->freq = freq;
 	piat = MicroSeconds(1000000.0 / (double) freq);
+
+	if (LltcConfig::ENABLE_PMU_EXP_RAND) {
+		rand = CreateObject<ExponentialRandomVariable>();
+		rand->SetAttribute("Mean", DoubleValue(1.0 / freq));
+		rand->SetAttribute("Bound", DoubleValue(50 * 1.0 / freq));
+	} else {
+		rand = NULL;
+	}
 }
 
 void LltcPMUApp::setNodeID(uint32_t nodeID) {
@@ -109,7 +118,15 @@ void LltcPMUApp::sendData(uint32_t rsgId) {
 	cout << "LltcPMUApp send data " << endl;
 	++dataId;
 
-	Simulator::Schedule(piat, &LltcPMUApp::sendData, this, rsgId);
+	if (LltcConfig::ENABLE_PMU_EXP_RAND) {
+		double piat_rand = 0.0;
+		do {
+			piat_rand = rand->GetValue();
+		} while (piat_rand <= 0.0);
+		Simulator::Schedule(ns3::Seconds(piat_rand), &LltcPMUApp::sendData, this, rsgId);
+	} else {
+		Simulator::Schedule(piat, &LltcPMUApp::sendData, this, rsgId);
+	}
 }
 
 

@@ -389,7 +389,7 @@ BackUri LltcMessagesHelper::parseBackUri(const Name& lltcPrefixName, const Name&
 	int nDataNameComponents = lltcPrefixName.size();
 	ebu.echoId = stoll(dataName.get(nDataNameComponents + 1).toUri(name::UriFormat::DEFAULT));
 	ebu.sourceNodeId = stoll(dataName.get(nDataNameComponents + 2).toUri(name::UriFormat::DEFAULT));
-
+	ebu.destNodeId = stoll(dataName.get(nDataNameComponents + 3).toUri(name::UriFormat::DEFAULT));
 	return ebu;
 }
 
@@ -451,10 +451,12 @@ UpSideControlUri LltcMessagesHelper::parseUpSideControlUri(const Name& lltcPrefi
 	return usc;
 }
 
-shared_ptr<Data> LltcMessagesHelper::constructLsa(string lltcPrefixStr, uint32_t lsaId, uint32_t sourceNodeId, uint32_t updateSeqNo, list<LinkState>* lsList) {
+shared_ptr<Data> LltcMessagesHelper::constructLsa(string lltcPrefixStr, uint32_t lsaId, uint32_t sourceNodeId,
+				uint32_t updateSeqNo, list<LinkState>* lsList, string type) {
 	stringstream ss;
 	ss.str("");
-	ss << lltcPrefixStr << "/" << LLTC_MSG_OP_LSA << "/" << lsaId << "/" << sourceNodeId << "/" << updateSeqNo;
+	ss << lltcPrefixStr << "/" << LLTC_MSG_OP_LSA << "/" << lsaId << "/" << sourceNodeId << "/" << updateSeqNo
+			<< "-" << type;
 
 	size_t n = lsList->size();
 	size_t nBufBytes = sizeof(LinkState) * n + sizeof(size_t);
@@ -487,7 +489,10 @@ LsaUri LltcMessagesHelper::parseLsaUri(const Name& lltcPrefixName, const Name& d
 	int nDataNameComponents = lltcPrefixName.size();
 	flu.lsaId = stoll(dataName.get(nDataNameComponents + 1).toUri(name::UriFormat::DEFAULT));
 	flu.sourceNodeId = stoll(dataName.get(nDataNameComponents + 2).toUri(name::UriFormat::DEFAULT));
-	flu.updateSeqNo = stoll(dataName.get(nDataNameComponents + 3).toUri(name::UriFormat::DEFAULT));
+	string seqNoAndType = dataName.get(nDataNameComponents + 3).toUri(name::UriFormat::DEFAULT);
+	size_t i = seqNoAndType.find("-");
+	flu.updateSeqNo = stoll(seqNoAndType.substr(0, i));
+	flu.type = seqNoAndType.substr(i + 1);
 
 	return flu;
 }

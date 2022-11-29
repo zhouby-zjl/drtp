@@ -14,6 +14,8 @@
 
 #include "lltc-strategy-common.hpp"
 
+#include <cmath>
+
 namespace nfd {
 namespace fw {
 
@@ -64,7 +66,12 @@ void LltcStrategy::afterReceiveData(const shared_ptr<pit::Entry>& pitEntry,
 	cout << "%%%%%%%>> " << dataName << " @ NodeID: " << forwardingStateColl->localNodeId << ", path ID: " << pathId <<
 			", time: " << Simulator::Now().GetSeconds() << endl;
 
+
 	if (operationStr.compare(LLTC_MSG_OP_CAPSULE) == 0) {
+		if (LltcConfig::LLTC_ENABLE_FAILOVER_ACTIVE_CHECK) {
+			doActiveLinkConnectivityCheck(ingress);
+		}
+
 		*outLog_in_msgs << LltcRoutesDumper::dumpMsg(true, true, rsgId, pathId, ingress, data) << endl;
 		this->onReceiveCapsule(pitEntry, ingress, data, ds, rsgId, pathId);
 		return;

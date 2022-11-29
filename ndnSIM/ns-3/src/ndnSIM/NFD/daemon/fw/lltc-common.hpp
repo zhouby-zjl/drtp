@@ -56,6 +56,11 @@ struct RetransInSingleEvent {
 	ns3::Time reqTime;
 };
 
+struct WaitCapsuleForActiveFailoverEvent {
+	ns3::EventId e;
+	ns3::Time waitTime;
+};
+
 struct RetransInMultipleEvent {
 	ns3::EventId e;
 	ns3::Time time;
@@ -103,6 +108,7 @@ struct LsaUri {
 	uint32_t lsaId;
 	uint32_t sourceNodeId;
 	uint32_t updateSeqNo;
+	string type;
 };
 
 struct ReportUri {

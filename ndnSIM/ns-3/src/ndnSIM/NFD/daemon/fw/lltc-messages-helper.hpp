@@ -72,7 +72,8 @@ public:
 
 	static shared_ptr<Data> constructEcho(string lltcPrefixStr, uint32_t echoId, uint32_t sourceNodeId);
 	static shared_ptr<Data> constructBack(string lltcPrefixStr, uint32_t echoId, uint32_t sourceNodeId, uint32_t destNodeId);
-	static shared_ptr<Data> constructLsa(string lltcPrefixStr, uint32_t lsaId, uint32_t sourceNodeId, uint32_t updateSeqNo, list<LinkState>* lsList);
+	static shared_ptr<Data> constructLsa(string lltcPrefixStr, uint32_t lsaId, uint32_t sourceNodeId,
+									uint32_t updateSeqNo, list<LinkState>* lsList, string type);
 
 	static string getCapsuleUri(string pitPrefixStr, uint32_t dataId);
 

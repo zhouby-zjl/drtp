@@ -18,8 +18,12 @@
 
 #include "ns3/ndnSIM/apps/ndn-app.hpp"
 #include "ns3/ndnSIM/model/lltc/lltc-config.hpp"
+#include "ns3/ndnSIM/model/ndn-common.hpp"
+#include "ns3/random-variable-stream.h"
 #include <string>
 #include <fstream>
+
+
 
 namespace lltc {
 
@@ -48,6 +52,8 @@ private:
 	int dataId;
 	uint32_t nodeID;
 	std::ofstream outLog_pmu;
+
+	ns3::Ptr<ns3::RandomVariableStream> rand;
 };
 
 }

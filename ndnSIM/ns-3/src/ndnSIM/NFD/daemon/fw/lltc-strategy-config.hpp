@@ -28,9 +28,9 @@ class LltcStrategyConfig {
 public:
 	// ================================== Strategy Configurations ===========================================
     static const Name& getStrategyName();
-	static void setIntervalTimeForCheckPathQos(ns3::Time time);
-	static void setWaitingTimeForCheckLinkConnectivityInPerioid(ns3::Time time);
-	static void setDelayTimeForRunningCheckLinkConnectivity(ns3::Time time);
+	static void setIntervalTimeForCheckPathQos(double secs);
+	static void setWaitingTimeForCheckLinkConnectivityInPerioid(double secs);
+	static void setDelayTimeForRunningCheckLinkConnectivity(double secs);
 	static void setQueueSizeForTransmittedDataIds(size_t n);
 	static void setCsLimitInEntries(size_t n);
 	static void setNumRetransRequests(int numRetransRequests);
@@ -50,9 +50,9 @@ public:
 	static int				pmuFreq;
 	static int		 		dataPiatInUs;
 	static double 			maxDriftRatioForPmuFreq;
-	static ns3::Time 		intervalTimeForCheckPathQos;
-	static ns3::Time 		waitingTimeForCheckLinkConnectivityInPerioid;
-	static ns3::Time 		delayTimeForRunningCheckLinkConnectivity;
+	static double	 		intervalTimeForCheckPathQos;
+	static double 			waitingTimeForCheckLinkConnectivityInPerioid;
+	static double 			delayTimeForRunningCheckLinkConnectivity;
 	static int 				timesForCheckPathConnectivity;
 	static string 			lltcPrefix;
 	static ns3::ndn::Name 	lltcPrefixName;

@@ -27,6 +27,12 @@ void LltcStrategy::onReceiveCapsule(const shared_ptr<pit::Entry>& pitEntry,
 
 	CapsuleUri du = LltcMessagesHelper::parseCapsuleUri(pitEntry->getName(), dataName);
 
+	if (LltcConfig::LLTC_DISABLE_RETRAN) {
+		this->deliverCapsule(pitEntry, dataName, data, du.dataId, rsgId);
+		return;
+	}
+
+
 	bool isNewData = checkAndRecordRetransmittedDataId(ds, du.dataId, Simulator::Now());
 	if (!isNewData) return;
 

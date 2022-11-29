@@ -172,7 +172,7 @@ void LltcStrategy::waitForNextCapsuleDelayedTaskIterative
 		LltcFIBEntry* fe, CapsuleForwardingStates* ds, bool waitForNextDataDelayedTask) {
 	if (rrcp.restRetransRequests == 0) {
 		if (waitForNextDataDelayedTask && LltcStrategyConfig::enableFailover) {
-			checkLinkConnectivityInActiveManner();
+			checkLinkConnectivityInActiveManner(fe->face_nextHop->getId());
 		}
 		return;
 	}

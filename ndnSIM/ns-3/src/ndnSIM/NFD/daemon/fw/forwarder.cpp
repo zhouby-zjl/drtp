@@ -21,6 +21,8 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * NFD, e.g., in COPYING.md file.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Added with LLTC extension for enabling Data streaming by Boyang Zhou (zhouby@zhejianglab.com).
  */
 
 #include "forwarder.hpp"

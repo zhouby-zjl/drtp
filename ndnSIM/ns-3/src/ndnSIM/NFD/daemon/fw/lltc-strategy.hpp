@@ -74,6 +74,8 @@ struct LinkMeasurementState {
 	uint32_t lsaUpdateSeqNo;
 	shared_ptr<list<LinkState>> prevLsa;
 	unordered_set<uint32_t> recentLsaIds;
+
+	unordered_map<FaceId, WaitCapsuleForActiveFailoverEvent*> waitCapForActiveFailoverEvents;
 };
 
 struct FaceStatusInternal {
@@ -214,13 +216,14 @@ private:
     void onReceiveLsa(const FaceEndpoint& ingress, const Data& data);
 
 	void checkLinkConnectivityInPeriodic();
-	void checkLinkConnectivityInPeriodicRecursive(link_test_id linkTestID);
-	void checkLinkConnectivityInActiveManner();
-	void runLinkTestsAndDoUpdate(int _timesForCheckPathQoS, link_test_id linkTestID);
+	void checkLinkConnectivityInActiveManner(FaceId faceID);
+	void doActiveLinkConnectivityCheck(const FaceEndpoint& ingress);
+	void runLinkTestsAndDoUpdate(int _timesForCheckPathQoS, link_test_id linkTestID,
+								bool isFull, FaceId faceID, bool isActive);
 	void updateFaceStatsWithLinkTestStates(link_test_id linkTestID);
-	void broadcastEchos(link_test_id linkTestID);
-	void broadcastingLsaTask();
-	void updatePreferredPathWithLSA(int32_t nodeId, list<LinkState>& lsList);
+	void broadcastEchos(link_test_id linkTestID, bool isFull, FaceId faceID);
+	void broadcastingLsaTask(bool isActive);
+	void updatePreferredPathWithLSA(int32_t nodeId, list<LinkState>& lsList, bool isActive);
 
 	LltcRrSubgraph* setLltcRrSubgraph(ResilientRoutes* rr, LltcGraph* g);
 
@@ -244,6 +247,10 @@ private:
 
 	ForwardingStateCollection* forwardingStateColl;
 	// =======================================================================================================
+
+
+	bool isPPNode();
+	bool isRSPNode();
 
 	ofstream* outLog_in_msgs;
 	ofstream* outLog_out_msgs;

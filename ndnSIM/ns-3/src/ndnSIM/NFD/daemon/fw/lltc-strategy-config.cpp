@@ -21,9 +21,9 @@ string LltcStrategyConfig::lltcPrefix = "/lltc";
 ns3::ndn::Name LltcStrategyConfig::lltcPrefixName = "/lltc";
 size_t LltcStrategyConfig::queueSizeForTransmittedDataIds = 1000;
 size_t LltcStrategyConfig::csLimitInEntries = 1000;
-ns3::Time LltcStrategyConfig::intervalTimeForCheckPathQos = ns3::Seconds(3);
-ns3::Time LltcStrategyConfig::waitingTimeForCheckLinkConnectivityInPerioid = ns3::Seconds(10);
-ns3::Time LltcStrategyConfig::delayTimeForRunningCheckLinkConnectivity = ns3::Seconds(1);
+double LltcStrategyConfig::intervalTimeForCheckPathQos = 3;
+double LltcStrategyConfig::waitingTimeForCheckLinkConnectivityInPerioid = 10;
+double LltcStrategyConfig::delayTimeForRunningCheckLinkConnectivity = 1;
 int LltcStrategyConfig::numRetransRequests = 3;
 int LltcStrategyConfig::pmuFreq = 50;
 int LltcStrategyConfig::dataPiatInUs = 1000000 / 50;
@@ -69,16 +69,16 @@ void LltcStrategyConfig::setTimesForCheckPathConnectivity(int timesForCheckPathC
 	LltcStrategyConfig::timesForCheckPathConnectivity = timesForCheckPathConnectivity;
 }
 
-void LltcStrategyConfig::setWaitingTimeForCheckLinkConnectivityInPerioid(ns3::Time time) {
-	LltcStrategyConfig::waitingTimeForCheckLinkConnectivityInPerioid = time;
+void LltcStrategyConfig::setWaitingTimeForCheckLinkConnectivityInPerioid(double secs) {
+	LltcStrategyConfig::waitingTimeForCheckLinkConnectivityInPerioid = secs;
 }
 
-void LltcStrategyConfig::setDelayTimeForRunningCheckLinkConnectivity(ns3::Time time) {
-	LltcStrategyConfig::delayTimeForRunningCheckLinkConnectivity = time;
+void LltcStrategyConfig::setDelayTimeForRunningCheckLinkConnectivity(double secs) {
+	LltcStrategyConfig::delayTimeForRunningCheckLinkConnectivity = secs;
 }
 
-void LltcStrategyConfig::setIntervalTimeForCheckPathQos(ns3::Time time) {
-	LltcStrategyConfig::intervalTimeForCheckPathQos = time;
+void LltcStrategyConfig::setIntervalTimeForCheckPathQos(double secs) {
+	LltcStrategyConfig::intervalTimeForCheckPathQos = secs;
 }
 
 void LltcStrategyConfig::setLltcPrefix(const char* prefix) {

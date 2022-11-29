@@ -47,6 +47,9 @@ struct LltcFaceEntry {
 	int remoteLltcNodeId;
 	int status;       // the values listed in the FACE_STATUS_* macros below
 	ns3::Time lastCheckTime;
+	vector<int> num_received_Capsules_in_recent_secs;
+	int last_count_secs;
+	int init_secs;
 };
 
 #define FACE_STATUS_NORMAL    0

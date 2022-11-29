@@ -169,15 +169,16 @@ int main(int argc, char** argv) {
 	LltcStrategyConfig::setLltcPrefix(LltcConfig::LLTC_PREFIX.c_str());
 	LltcStrategyConfig::setPmuFreq(LltcConfig::NETWORK_PMU_DATA_FREQ);
 	LltcStrategyConfig::setNumRetransRequests(LltcConfig::LLTC_NUM_RETRANS_REQUESTS);
-	LltcStrategyConfig::setIntervalTimeForCheckPathQos(ns3::MicroSeconds(intervalTimeForCheckPathQosInUs));
-	LltcStrategyConfig::setWaitingTimeForCheckLinkConnectivityInPerioid(ns3::Seconds(LltcConfig::LLTC_PERIOD_FOR_CHECK_LINK_CONNECTIVITY_SECS));
-	LltcStrategyConfig::setDelayTimeForRunningCheckLinkConnectivity(ns3::Seconds(LltcConfig::LLTC_INITIAL_DELAY_FOR_CHECK_LINK_CONNECTIVITY_SECS));
+	LltcStrategyConfig::setIntervalTimeForCheckPathQos((double) intervalTimeForCheckPathQosInUs / 1000000.0);
+	LltcStrategyConfig::setWaitingTimeForCheckLinkConnectivityInPerioid(LltcConfig::LLTC_PERIOD_FOR_CHECK_LINK_CONNECTIVITY_SECS);
+	LltcStrategyConfig::setDelayTimeForRunningCheckLinkConnectivity(LltcConfig::LLTC_INITIAL_DELAY_FOR_CHECK_LINK_CONNECTIVITY_SECS);
 	LltcStrategyConfig::setTimesForCheckPathConnectivity(LltcConfig::LLTC_TIMES_FOR_CHECK_PATH_CONNECTIVITY);
 	LltcStrategyConfig::setQueueSizeForTransmittedDataIds(LltcConfig::LLTC_QUEUE_SIZE_FOR_TRANSMITTED_DATA_IDS);
 	LltcStrategyConfig::setCsLimitInEntries(LltcConfig::LLTC_CS_LIMITS_IN_ENTRIES);
 	LltcStrategyConfig::setMaxDriftRatioForPmuFreq(LltcConfig::LLTC_MAX_DRIFT_RANGE_RATIO_FOR_PMU_FREQ);
 	LltcStrategyConfig::setEnableFailover(LltcConfig::LLTC_ENABLE_FAILOVER);
 	LltcStrategyConfig::setNumDataRetransReportsToSend(LltcConfig::LLTC_NUM_DATA_RETRANS_REPORTS_TO_SEND);
+
 
 	// configuration for error or failure events simulation
 	int faultSim_Type = LltcConfig::FAULT_SIM_TYPE;
@@ -244,7 +245,7 @@ int main(int argc, char** argv) {
 		pmuApp->SetStopTime(Seconds(LltcConfig::SIM_TIME_SECS));
 	}
 
-	LltcRoutingHelper lltcRoutingHelper(g, config);
+	LltcRoutingHelper lltcRoutingHelper(g, config, ROUTING_TYPE_DRTP);
 	lltcRoutingHelper.InstallAll();
 	for (size_t i = 0; i < (size_t) 1; ++i) {
 		size_t nodeId = NODE_ID_PMUS[i];
@@ -367,7 +368,7 @@ int main(int argc, char** argv) {
 
 	ofstream* logOut_lossRates = LltcLog::getLogRrLossRatesEvaluation();
 
-	ResilientRouteGeneration* rrg = lltcRoutingHelper.getRRG();
+	ResilientRouteGenerationForDRTP* rrg = (ResilientRouteGenerationForDRTP*)lltcRoutingHelper.getRRG();
 	LltcGraph* lltcGraph = lltcRoutingHelper.getGraph();
 	LltcResilientRouteVectors* rrv = rrg->genResilientRoutesVectors(lltcGraph, LltcConfig::NETWORK_NODE_ID_PMU_STATIC, config);
 	ResilientRoutes* rr = rrg->constructResilientRoutes(lltcGraph, rrv, LltcConfig::NETWORK_NODE_ID_PDC, config);

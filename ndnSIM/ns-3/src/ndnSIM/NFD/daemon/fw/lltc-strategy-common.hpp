@@ -27,6 +27,7 @@
 #include "lltc-strategy.hpp"
 #include "lltc-strategy-config.hpp"
 
+#include "ns3/ndnSIM/model/lltc/lltc-config.hpp"
 #include "ns3/ndnSIM/model/lltc/lltc-router.hpp"
 #include "ns3/ndnSIM/model/lltc/lltc-resilient-routes-generation.hpp"
 #include "NFD/daemon/fw/forwarder.hpp"

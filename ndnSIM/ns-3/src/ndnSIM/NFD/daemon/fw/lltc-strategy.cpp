@@ -50,7 +50,11 @@ LltcStrategy::LltcStrategy(Forwarder& forwarder, const Name& name) : Strategy(fo
 	linkMeasurementState.isCheckingLinkStatesInPeriodInRunning = false;
 
 	if (LltcStrategyConfig::enableFailover && forwardingStateColl->fssMap.size() > 0) {
-		Simulator::Schedule(LltcStrategyConfig::delayTimeForRunningCheckLinkConnectivity, &LltcStrategy::checkLinkConnectivityInPeriodic, this);
+		bool isRSGNode = isPPNode() || isRSPNode();
+		if (isRSGNode) {
+			Simulator::Schedule(Seconds(LltcStrategyConfig::delayTimeForRunningCheckLinkConnectivity),
+								&LltcStrategy::checkLinkConnectivityInPeriodic, this);
+		}
 	}
 
 	outLog_in_msgs = LltcLog::getLogOutput(this->forwardingStateColl->localNodeId, LOG_IN_MSGS);
@@ -95,7 +99,39 @@ const Name& LltcStrategy::getStrategyName() {
 	return strategyName;
 }
 
+bool LltcStrategy::isPPNode() {
+	bool isPPNode = false;
+	for (unordered_map<rsg_id, ForwardingStateForRSG>::iterator iter = forwardingStateColl->fssMap.begin();
+			iter != forwardingStateColl->fssMap.end(); ++iter) {
+		for (vector<rsg_node*>::iterator iter2 = iter->second.rsg.nodes.begin(); iter2 != iter->second.rsg.nodes.end(); ++iter2) {
+			if ((*iter2)->nodeID == forwardingStateColl->localNodeId) {
+				isPPNode = true;
+				break;
+			}
+		}
+	}
+	return isPPNode;
+}
 
+bool LltcStrategy::isRSPNode() {
+	bool isRSPNode = false;
+	for (unordered_map<rsg_id, ForwardingStateForRSG>::iterator iter = forwardingStateColl->fssMap.begin();
+						iter != forwardingStateColl->fssMap.end(); ++iter) {
+		for (unordered_map<rsg_node_id, vector<rsg_path_compact>>::iterator iter2 = iter->second.rsg.rsg_compacted_rr.hrsp.begin();
+				iter2 != iter->second.rsg.rsg_compacted_rr.hrsp.end(); ++iter2) {
+			for (vector<rsg_path_compact>::iterator iter3 = iter2->second.begin(); iter3 != iter2->second.end(); ++iter3) {
+				if (std::find(iter3->nodeIds.begin(), iter3->nodeIds.end(), forwardingStateColl->localNodeId) != iter3->nodeIds.end()) {
+					isRSPNode = true;
+					break;
+				}
+			}
+
+		}
+
+		if (isRSPNode) break;
+	}
+	return isRSPNode;
+}
 
 
 }
