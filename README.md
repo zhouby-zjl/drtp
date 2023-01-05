@@ -4,12 +4,10 @@
 This work is licensed under CC BY-NC-SA 4.0
 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-Copyright (c) 2021-2022 zhouby-zjl @ github
+Copyright (c) 2021-2023 Boyang Zhou @ Zhejiang Lab
 
 This file is a part of "Disruption Resilient Transport Protocol"
 (https://github.com/zhouby-zjl/drtp/).
-
-Written by zhouby-zjl @ github
 
 This software is protected by the patents as well as the software copyrights.
  **********************************************************************************
