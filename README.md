@@ -18,8 +18,8 @@ In a modern electric power transmission grid, the phasor measurement unit requir
 
 ## Heuristic MPSG generation algorithm (HeuMPSG)
 DRTP maintains a recursive hop-by-hop retransmission process using the subpaths-based routes resiliently structured as the multi-path subgraph (MPSG), where MPSG consists of a reliable primary path (PP) and its redundant subpaths (RSPs) to connect two hops in PP as much as possible. However, for the recursiveness, it is non-trivial to efficiently generate the resilient MPSGs with high computation complexity being NP-complete. To exploit the resilience, HeuMPSG generate MPSGs less fragile, while for each MPSG, its recursive process meets a constraint on the end-to-end packet delivery time (EEDT) in maximum. It heuristically finds a candidate PP hop-by-hop, and for each hop, searches maximally disjoint RSPs, with a lower computation cost. We evaluated HeuMPSG for real power grids via simulations. The results demonstrate that HueMPSG significantly improves the resilience with more RSPs averaged at most 171.51%, at 7.07 times faster speed. Under heavy random faults, HueMPSG significantly improves the resilience with lower EEFRs and EEDTs at most in 29.11% and 2.41 s, respectively. The source code of HeuMPSG can be found in:
-./ndnSIM/ns-3/src/ndnSIM/model/lltc/lltc-resilient-routes-generation-for-drtp.cpp
-./ndnSIM/ns-3/src/ndnSIM/model/lltc/lltc-resilient-routes-generation-for-drtp.hpp
+- ./ndnSIM/ns-3/src/ndnSIM/model/lltc/lltc-resilient-routes-generation-for-drtp.cpp
+- ./ndnSIM/ns-3/src/ndnSIM/model/lltc/lltc-resilient-routes-generation-for-drtp.hpp
 
 ## What is the status of the DRTP?
 The DRTP is currently in the prototype stage which is comprehensively tested under the IEEE 300 bus dataset and South Carolina 500-bus dataset with an sigfinicantly reduced EEFR performance. We are looking forward to implement into a real router in the future.
