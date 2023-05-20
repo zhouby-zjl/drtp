@@ -28,8 +28,21 @@ void LltcStrategy::onReceiveRequestS(const shared_ptr<pit::Entry>& pitEntry,
 	cout << "--> receive RequestS at node " << forwardingStateColl->localNodeId << " for lostData ID " << rru.lostDataId  << " from "
 			<< rru.sourceNodeId << " along with the path " << pathId << endl;
 
+	if (rru.lostDataId == 102) {
+		cout << "here" << endl;
+	}
+
+//	uint64_t start_time = get_cur_time_ns();
 	bool isExact = rru.type.compare("Closest") != 0;
 	pair<LltcDataID, const Data*> dataFound = lookupInCs(pitPrefixStr, rru.lostDataId, isExact);
+
+//	uint64_t time_ns = get_cur_time_ns() - start_time;
+
+/*	if (LltcConfig::LLTC_PROCESSING_COSTS_LOG_ENABLE) {
+		ofstream* logProcessingCosts = LltcLog::getLogProcessingCosts();
+		*logProcessingCosts << this->forwardingStateColl->localNodeId << ",RequestS," << time_ns << endl;
+	}*/
+
 
 	if (dataFound.second == NULL) {
 		shared_ptr<Data> newData = LltcMessagesHelper::constructRetranS(pitPrefixStr, dataFound.first, forwardingStateColl->localNodeId,
@@ -595,6 +608,9 @@ void LltcStrategy::sendReport(list<LltcDataID>* lostDataIDs, string pitPrefixStr
 
 // --------------------------------------- State Management -------------------------------------------------
 bool LltcStrategy::checkAndRecordRetransmittedDataId(CapsuleForwardingStates* ds, LltcDataID retransDataId, ns3::Time time) {
+	if (this->forwardingStateColl->localNodeId == 83 && retransDataId == 0) {
+		cout << "here!!" << endl;
+	}
 	if (ds->transmittedDataIds.contains(retransDataId)) {
 		return false;
 	}

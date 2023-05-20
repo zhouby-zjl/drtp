@@ -43,6 +43,7 @@
 #include <fstream>
 #include <random>
 #include <time.h>
+#include <string.h>
 
 using namespace lltc;
 using namespace ns3;
@@ -257,12 +258,12 @@ int main(int argc, char** argv) {
 
 	LltcGraph* g = new LltcGraph(LltcConfig::NETWORK_NODE_PROCESS_DELAY_US, LltcConfig::NETWORK_LINK_QUEUE_DELAY_US,
 								LltcConfig::NETWORK_LINK_TRANS_DELAY_US);
-	string* filePath = new string(LltcConfig::NETWORK_TOPO_FILE);
+	string filePath = LltcConfig::NETWORK_TOPO_FILE;
 	bool succ = false;
 	if (LltcConfig::NETWORK_TOPO_FILE_TYPE.compare("IEEE") == 0) {
-		succ = g->loadFromIEEEDataFile(filePath, false, LltcConfig::LLTC_ASSUMED_LINK_RELIA_RATE, 0);
+		succ = g->loadFromIEEEDataFile(&filePath, false, LltcConfig::LLTC_ASSUMED_LINK_RELIA_RATE, 0);
 	} else if (LltcConfig::NETWORK_TOPO_FILE_TYPE.compare("CSV") == 0) {
-		succ = g->loadFromCSVDataFile(filePath, false, LltcConfig::LLTC_ASSUMED_LINK_RELIA_RATE, 0);
+		succ = g->loadFromCSVDataFile(&filePath, false, LltcConfig::LLTC_ASSUMED_LINK_RELIA_RATE, 0);
 	}
 	if (!succ) return -1;
 
@@ -287,7 +288,7 @@ int main(int argc, char** argv) {
 		p2p.Install(nodeA, nodeB);
 	}
 
-	p2p.EnablePcap("drtp-dijkstra", LltcConfig::NETWORK_NODE_ID_PDC, 0, true);
+	p2p.EnablePcap("drtp-optmpsg", LltcConfig::NETWORK_NODE_ID_PDC, 0, true);
 
 	StackHelper ndnHelper;
 	ndnHelper.InstallAll();
@@ -319,7 +320,7 @@ int main(int argc, char** argv) {
 		pmuApp->SetStopTime(Seconds(LltcConfig::SIM_TIME_SECS));
 	}
 
-	LltcRoutingHelper lltcRoutingHelper(g, config, ROUTING_TYPE_DRTP_DIJKSTRA);
+	LltcRoutingHelper lltcRoutingHelper(g, config, ROUTING_TYPE_DRTP);
 	lltcRoutingHelper.InstallAll();
 	for (size_t i = 0; i < (size_t) 1; ++i) {
 		size_t nodeId = NODE_ID_PMUS[i];
@@ -335,6 +336,7 @@ int main(int argc, char** argv) {
 	lltcRoutingHelper.computeRoutesVectors();
 	lltcRoutingHelper.computeRoutesForCommPairs();
 	lltcRoutingHelper.dumpRouterLinkFaceIDs();
+
 
 	StrategyChoiceHelper::InstallAll<nfd::fw::LltcStrategy>("/lltc");
 
@@ -385,7 +387,7 @@ int main(int argc, char** argv) {
 		case FAULT_SIM_TYPE_ERR_FOR_SINGLE_PP_LINK: {
 			commPairs = lltcRoutingHelper.getCommPairs();
 			list<comm_pair*>::iterator iter = commPairs->begin();
-			vector<int>* nodeIds = (*iter)->rr->primaryPath->nodeIds;
+			//vector<int>* nodeIds = (*iter)->rr->primaryPath->nodeIds;
 			vector<LltcLink*>* singleLink = new vector<LltcLink*>();
 
 			LltcLink* l = g->getLinkByNodeIds(LltcConfig::FAULT_SIM_TYPE_ERR_FOR_SINGLE_PP_LINK_ROUTER_1,
@@ -426,6 +428,7 @@ int main(int argc, char** argv) {
 					LltcConfig::FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_ERR_RATE);
 			break;
 		}
+
 	}
 
 	Simulator::Stop(Seconds(LltcConfig::SIM_TIME_SECS));

@@ -27,6 +27,10 @@ void LltcStrategy::onReceiveCapsule(const shared_ptr<pit::Entry>& pitEntry,
 
 	CapsuleUri du = LltcMessagesHelper::parseCapsuleUri(pitEntry->getName(), dataName);
 
+	if (du.dataId == 101) {
+		cout << "here" << endl;
+	}
+
 	if (LltcConfig::LLTC_DISABLE_RETRAN) {
 		this->deliverCapsule(pitEntry, dataName, data, du.dataId, rsgId);
 		return;

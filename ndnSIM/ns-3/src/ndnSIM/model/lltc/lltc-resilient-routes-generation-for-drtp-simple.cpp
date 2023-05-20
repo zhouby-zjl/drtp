@@ -62,13 +62,17 @@ LltcResilientRouteVectors* ResilientRouteGenerationForDrtpSimple::genResilientRo
 					rsp = new RedundantSubPath(rsp_path, 0, rsp_path->nodeIds->size() - 1);
 					rsp->linkUpDelay = 0;
 					rsp->linkDownDelay = 0;
+					rsp->dataDeliveryLossRate = 1.0;
 					for (uint32_t m = 1; m < rsp_path->nodeIds->size(); ++m) {
 						nodeA = (*rsp_path->nodeIds)[m - 1];
 						nodeB = (*rsp_path->nodeIds)[m];
 						l_rsp = g->getLinkByNodeIds(nodeA, nodeB);
 						rsp->linkUpDelay += g->getLinkDelayTotal(l_rsp, nodeA, nodeB);
 						rsp->linkDownDelay += g->getLinkDelayTotal(l_rsp, nodeB, nodeA);
+						rsp->dataDeliveryLossRate *= (l_rsp->abRelia * l_rsp->baRelia);
 					}
+
+					rsp->dataDeliveryLossRate = pow(1.0 - rsp->dataDeliveryLossRate, config->numRetransRequests);
 
 					rsp->retransDelayInMultiTimes = (rsp->linkUpDelay + rsp->linkDownDelay) *
 													config->numRetransRequests;
@@ -284,7 +288,9 @@ ResilientRoutes* ResilientRouteGenerationForDrtpSimple::constructResilientRoutes
 	unordered_map<int, ResilientRoutes*>* all_rrs = rrv->all_rrs;
 
 	if (all_rrs->find(dstNodeId) != all_rrs->end()) {
-		return (*all_rrs)[dstNodeId];
+		ResilientRoutes* rr = (*all_rrs)[dstNodeId];
+		rr->expectedRrLossRate = computeResilientRouteEEFR(g, rr, config);
+		return rr;
 	}
 	return NULL;
 }
@@ -296,4 +302,53 @@ void ResilientRouteGenerationForDrtpSimple::addPathNodeIdsArrayToLinkIdsSet(Lltc
 		int linkId = g->getLinkByNodeIds((*pathNodeIds)[i], (*pathNodeIds)[i - 1])->linkId;
 		linkIdSet->insert(linkId);
 	}
+}
+
+double ResilientRouteGenerationForDrtpSimple::computePHI(LltcLink* e, LltcNode* uNode, LltcNode* vNode,
+					vector<RedundantSubPath*>* rsps, unordered_set<RedundantSubPath*>* rsps_invalid, int numRetransRequests) {
+	double r = 1.0;
+	for (RedundantSubPath* rsp : *rsps) {
+		if (rsps_invalid != NULL && rsps_invalid->find(rsp) == rsps_invalid->end()) {
+			continue;
+		}
+		r *= rsp->dataDeliveryLossRate;
+	}
+	double uvRelia = LltcGraph::getLinkRelia(e, uNode, vNode, false);
+	double vuRelia = LltcGraph::getLinkRelia(e, vNode, uNode, false);
+	r *= (1.0 - uvRelia) * pow(1.0 - uvRelia * vuRelia, numRetransRequests);
+	return r;
+}
+
+double ResilientRouteGenerationForDrtpSimple::computeResilientRouteEEFR(LltcGraph* g, ResilientRoutes* rr, LltcConfiguration* config) {
+	int nHopPrimPath = rr->primaryPath->nodeIds->size();
+	double lossRate = 0.0;
+	double PSI = 0.0;
+	double PSI_prev = 1.0;
+	double PHI = 0.0;
+	double PHI_prev = 0.0;
+
+	for (int i = 1; i < nHopPrimPath; ++i) {
+		int uNodeId = (*(rr->primaryPath->nodeIds))[i - 1];
+		int vNodeId = (*(rr->primaryPath->nodeIds))[i];
+		LltcNode* uNode = g->getNodeById(uNodeId);
+		LltcNode* vNode = g->getNodeById(vNodeId);
+		LltcLink* e = g->getLinkByNodeIds(uNodeId, vNodeId);
+
+		vector<RedundantSubPath*>* rsps = rr->getRSPsByNodeId(vNodeId);
+		if (rsps != NULL) {
+			PHI = this->computePHI(e, uNode, vNode, rsps, NULL, config->numRetransRequests);
+		} else {
+			double uvRelia = LltcGraph::getLinkRelia(e, uNode, vNode, false);
+			double vuRelia = LltcGraph::getLinkRelia(e, vNode, uNode, false);
+			PHI = (1.0 - uvRelia) * pow(1.0 - uvRelia * vuRelia, config->numRetransRequests);
+		}
+
+		PSI = PSI_prev * (1 - PHI_prev);
+		lossRate += PSI * PHI;
+
+		PSI_prev = PSI;
+		PHI_prev = PHI;
+	}
+
+	return lossRate;
 }

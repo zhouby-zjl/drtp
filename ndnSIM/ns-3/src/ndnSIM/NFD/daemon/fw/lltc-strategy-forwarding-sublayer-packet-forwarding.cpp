@@ -137,8 +137,8 @@ void LltcStrategy::afterReceiveData(const shared_ptr<pit::Entry>& pitEntry,
 
 	} else if (operationStr.compare(LLTC_MSG_OP_UP_SIDE_CONTROL) == 0) {
 		this->onReceiveUpSideControl(pitEntry, ingress, data, ds, rsgId, pathId);
-
 	}
+
 }
 
 void LltcStrategy::afterReceiveNonPitData(const FaceEndpoint& ingress, const Data& data) {

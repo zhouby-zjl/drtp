@@ -51,6 +51,12 @@ int LltcConfig::FAULT_SIM_TYPE_ERR_FOR_MULTIPLE_LINKS_N_RAND_DISRUPTED_NON_PP_LI
 double LltcConfig::FAULT_SIM_TYPE_ERR_FOR_MULTIPLE_LINKS_FLAP_PERIOD = 60.0;
 int LltcConfig::FAULT_SIM_TYPE_ERR_FOR_MULTIPLE_LINKS_FLAP_TIMES = 1;
 
+string LltcConfig::FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_IDS = "";
+double LltcConfig::FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_ERR_RATE = 0.15;
+double LltcConfig::FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_START_TIME = 3;
+int LltcConfig::FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_FLAP_PERIOD = 60;
+int LltcConfig::FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_FLAP_TIMES = 1;
+
 string LltcConfig::SIM_LOG_DIR = "/home/zby/lltc-log/";
 string LltcConfig::SIM_LOG_DIR_CP_TESTS = "/home/zby/lltc-log-cp/";
 bool LltcConfig::ENABLE_LOG_IN_OUT_MSGS = true;
@@ -84,6 +90,7 @@ double LltcConfig::LLTC_PIT_DURATION_MS = 100000;
 
 bool LltcConfig::LLTC_DISABLE_RETRAN = false;
 bool LltcConfig::ENABLE_PMU_EXP_RAND = false;
+bool LltcConfig::LLTC_PROCESSING_COSTS_LOG_ENABLE = false;
 
 bool LltcConfig::loadConfigFile(string filePath) {
 	ifstream f;
@@ -133,6 +140,8 @@ bool LltcConfig::loadConfigFile(string filePath) {
 					FAULT_SIM_TYPE = FAULT_SIM_TYPE_ERR_FOR_SINGLE_PP_LINK;
 				} else if (value.compare("ERR_FOR_MULTIPLE_LINKS") == 0) {
 					FAULT_SIM_TYPE = FAULT_SIM_TYPE_ERR_FOR_MULTIPLE_LINKS;
+				} else if (value.compare("FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS") == 0) {
+					FAULT_SIM_TYPE = FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS;
 				} else {
 					FAULT_SIM_TYPE = FAULT_SIM_TYPE_ERR_NONE;
 				}
@@ -164,6 +173,16 @@ bool LltcConfig::loadConfigFile(string filePath) {
 				FAULT_SIM_TYPE_ERR_FOR_MULTIPLE_LINKS_FLAP_PERIOD = atof(value.c_str());
 			} else if (name.compare("FAULT_SIM_TYPE_ERR_FOR_MULTIPLE_LINKS_FLAP_TIMES") == 0) {
 				FAULT_SIM_TYPE_ERR_FOR_MULTIPLE_LINKS_FLAP_TIMES = atoi(value.c_str());
+			} else if (name.compare("FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_IDS") == 0) {
+				FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_IDS = value.c_str();
+			} else if (name.compare("FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_ERR_RATE") == 0) {
+				FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_ERR_RATE = atof(value.c_str());
+			} else if (name.compare("FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_START_TIME") == 0) {
+				FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_START_TIME = atof(value.c_str());
+			} else if (name.compare("FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_FLAP_PERIOD") == 0) {
+				FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_FLAP_PERIOD = atof(value.c_str());
+			} else if (name.compare("FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_FLAP_TIMES") == 0) {
+				FAULT_SIM_TYPE_ERR_FOR_DESIGNATED_LINKS_FLAP_TIMES = atoi(value.c_str());
 			} else if (name.compare("SIM_LOG_DIR") == 0) {
 				SIM_LOG_DIR = value;
 			} else if (name.compare("SIM_LOG_DIR_CP_TESTS") == 0) {
@@ -222,6 +241,8 @@ bool LltcConfig::loadConfigFile(string filePath) {
 				LLTC_DISABLE_RETRAN = (strcmp(value.c_str(), "true") == 0);
 			} else if (name.compare("ENABLE_PMU_EXP_RAND") == 0) {
 				ENABLE_PMU_EXP_RAND = (strcmp(value.c_str(), "true") == 0);
+			} else if (name.compare("LLTC_PROCESSING_COSTS_LOG_ENABLE") == 0) {
+				LLTC_PROCESSING_COSTS_LOG_ENABLE = (strcmp(value.c_str(), "true") == 0);
 			}
 		}
 	}

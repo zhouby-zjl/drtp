@@ -30,6 +30,7 @@ ofstream* LltcLog::logRrDelaysEvaluation = NULL;
 ofstream* LltcLog::logRrReliaEvaluation = NULL;
 ofstream* LltcLog::logRetranEvents = NULL;
 ofstream* LltcLog::logNumRetranPaths = NULL;
+ofstream* LltcLog::logProcessingCosts = NULL;
 
 list<retran_event>* LltcLog::retranEvents = NULL;
 list<num_retran_paths>* LltcLog::numRetranPaths = NULL;
@@ -111,6 +112,11 @@ void LltcLog::openLogs(int nRouters) {
 	ss << *logDirPath << "log-num-retran-paths";
 	logNumRetranPaths = new ofstream;
 	logNumRetranPaths->open(ss.str(), ios::trunc);
+
+	ss.str("");
+	ss << *logDirPath << "log-processing-costs";
+	logProcessingCosts = new ofstream;
+	logProcessingCosts->open(ss.str(), ios::trunc);
 }
 
 ofstream* LltcLog::getLogOutput(uint32_t routerID, int logType) {
@@ -187,6 +193,10 @@ ofstream* LltcLog::getLogRrReliaEvaluation() {
 	return logRrReliaEvaluation;
 }
 
+ofstream* LltcLog::getLogProcessingCosts() {
+	return logProcessingCosts;
+}
+
 void LltcLog::flushRouterLogs(uint32_t routerID) {
 	if (logsInMsgs.find(routerID) != logsInMsgs.end()) {
 		logsInMsgs[routerID]->flush();
@@ -210,6 +220,7 @@ void LltcLog::closeLogs() {
 	logFailovers->close();
 	logFailureEvents->close();
 	logFailoversActiveChecks->close();
+	logProcessingCosts->close();
 }
 
 void LltcLog::cleanLogDir() {
@@ -235,13 +246,13 @@ string LltcRoutesDumper::dumpRR(ResilientRoutes* rr) {
 	stringstream ss;
 	int m = 0;
 	for (pair<int, vector<RedundantSubPath*>*> rspItem : *rr->getHRSP()) {
-		if (rspItem.second->size() > 0) ++m;
+		if (rspItem.second != NULL && rspItem.second->size() > 0) ++m;
 	}
 
 	int u = 0;
 	for (pair<int, vector<RedundantSubPath*>*> rspItem : *rr->getHRSP()) {
 		vector<RedundantSubPath*>* rsps = rspItem.second;
-		if (rsps->size() == 0) continue;
+		if (rsps == NULL || rsps->size() == 0) continue;
 		ss << rspItem.first << ":";
 		for (size_t i = 0; i < rsps->size(); ++i) {
 			RedundantSubPath* rsp = (*rsps) [i];
@@ -296,4 +307,11 @@ string LltcRoutesDumper::dumpMsg(bool isPIT, bool isRSG, uint32_t rsgId, uint32_
 	}
 
 	return ss.str();
+}
+
+uint64_t get_cur_time_ns() {
+	struct timespec tn;
+	clock_gettime(CLOCK_REALTIME, &tn);
+	uint64_t cur_time_ns = tn.tv_sec * 1000000000 + tn.tv_nsec;
+	return cur_time_ns;
 }

@@ -12,7 +12,7 @@
  * numbered with 2020SR1875227 and 2020SR1875228.
  */
 
-#include "ns3/ndnSIM/model/lltc/lltc-resilient-routes-generation.hpp"
+#include "ns3/ndnSIM/model/lltc/lltc-resilient-routes-generation-for-drtp.hpp"
 
 #include "ns3/nstime.h"
 #include "ns3/core-module.h"
@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
 	ofstream* logOut = new ofstream;
 	logOut->open(output_file, ios::trunc);
 
-	ResilientRouteGenerationForDrtpSimple* rrg = new ResilientRouteGenerationForDrtpSimple();
+	ResilientRouteGenerationForDRTP* rrg = new ResilientRouteGenerationForDRTP();
 
 	vector<int>* peers = genRandomPeers(n_peers, n_nodes, srcNodeId);
 

@@ -47,27 +47,35 @@ LltcResilientRouteVectors* ResilientRouteGenerationForDRTP::genResilientRoutesVe
 
 	double PSIs[n];
 	double PHIs[n];
+	double ALPHAs[n];
+	double GOALs[n];
 
 	bool isNodeIdInQ[n];
 	for (int i = 0; i < n; ++i) {
 		isNodeIdInQ[i] = true;
 		PSIs[i] = 1.0;
 		PHIs[i] = 0;
+		ALPHAs[i] = 1.0;
 
 		rrv->prevNodeIdx[i] = -1;
 		rrv->expectedLossRates[i] = 1.0;
 		rrv->rspsMap[i] = NULL;
 		rrv->maxPrimPathDelays[i] = 0.0;
 		rrv->maxDelays[i] = 0.0;
+
+		GOALs[i] = 1.0;
 	}
 
 	rrv->expectedLossRates[srcNodeId] = 0.0;
 	rrv->maxDelays[srcNodeId] = computePmuPiatDriftRange(config->pmuFreq, config->maxDriftRatioForPmuFreq,
 														config->maxConsecutiveDriftPackets);
+	GOALs[srcNodeId] = 0.0;
 	PSIs[srcNodeId] = 1.0;
 	PHIs[srcNodeId] = 0.0;
+	ALPHAs[srcNodeId] = 1.0;
 
-	FHKeyFuncLossRate keyFunc(rrv->expectedLossRates);
+	//FHKeyFuncLossRate keyFunc(rrv->expectedLossRates);
+	FHKeyFuncLossRate keyFunc(GOALs);
 	FibonacciHeap q(&keyFunc);
 
 	for (int i = 0; i < n; ++i) {
@@ -76,7 +84,8 @@ LltcResilientRouteVectors* ResilientRouteGenerationForDRTP::genResilientRoutesVe
 
 	while (q.size() > 0) {
 		//cout << q.size() << endl;
-		int uNodeId = *((int*) (q.removeMax()->getNodeObject()));
+		FibonacciHeapNode* heapNode = q.removeMax();
+		int uNodeId = *((int*) (heapNode->getNodeObject()));
 		LltcNode* uNode = g->getNodeById(uNodeId);
 		isNodeIdInQ[uNode->nodeId] = false;
 
@@ -84,10 +93,10 @@ LltcResilientRouteVectors* ResilientRouteGenerationForDRTP::genResilientRoutesVe
 			LltcLink* e = (*(uNode->eLinks))[i];
 			LltcNode* vNode = LltcGraph::getLinkOpSide(e, uNode);
 			int vNodeId = vNode->nodeId;
+
 			if (!isNodeIdInQ[vNodeId]) continue;
 
 			int primPathLinkDelay = LltcGraph::getLinkDelayTotal(e, uNode, vNode);
-			//int primPathQueueDelay = LltcGraph::getLinkDelayQueue(e, uNode, vNode);
 			int primPathLinkDelay_up = LltcGraph::getLinkDelayTotal(e, vNode, uNode);
 			double primPathDelay = rrv->maxPrimPathDelays[uNodeId] + primPathLinkDelay;
 			if (primPathDelay > config->maxPathDelay) continue;
@@ -98,22 +107,36 @@ LltcResilientRouteVectors* ResilientRouteGenerationForDRTP::genResilientRoutesVe
 			unordered_set<int>* invalidLinkIds = convertPathNodeIdsArrayToLinkIdsSet(g, retransDstNodeIds);
 			invalidLinkIds->insert(e->linkId);
 
-			//double curRrMaxDelay = rrv->maxDelays[uNodeId] + primPathLinkDelay * 2 + primPathQueueDelay;
 			double curRrMaxDelay = rrv->maxDelays[uNodeId] + primPathLinkDelay;
 			double maxAllowedRetransDelay = config->maxPathDelay - curRrMaxDelay;
 			vector<RedundantSubPath*>* rsps = genRedundantSubPaths(g, vNode->nodeId, retransDstNodeIds,
 										invalidLinkIds, config, maxAllowedRetransDelay);
 
-			double PHI = computePHI(e, uNode, vNode, rsps, config->numRetransRequests);
-			double PSI = PSIs[uNodeId] * (1 - PHIs[uNodeId]);
+			double PHI, PSI, F_overV;
 
-			double overV = rrv->expectedLossRates[uNode->nodeId] + PHI * PSI;
-			if (overV < rrv->expectedLossRates[vNode->nodeId]) {
+			PHI = computePHI(e, uNode, vNode, rsps, NULL, config->numRetransRequests);
+			PSI = PSIs[uNodeId] * (1 - PHIs[uNodeId]);
+
+			F_overV = rrv->expectedLossRates[uNode->nodeId] + PHI * PSI;
+
+
+			double alpha_overV = ALPHAs[uNodeId] * (1 - pow(1 - LltcGraph::getLinkRelia(e, uNode, vNode, false),
+					config->numDataRetransReportsToSend));
+
+			//double all_cur = ALPHAs[vNodeId] * rrv->expectedLossRates[vNode->nodeId] + (1 - ALPHAs[vNodeId]);
+			double all_overV = alpha_overV * F_overV + (1 - alpha_overV);
+
+			//if (F_overV < rrv->expectedLossRates[vNode->nodeId]) {
+			//if (all_overV < all_cur) {
+			if (all_overV < GOALs[vNodeId]) {
 				rrv->maxPrimPathDelays[vNodeId] = primPathDelay;
 				int primLinkRetransDelayInUs = (primPathLinkDelay_up + primPathLinkDelay) * config->numRetransRequests;
-				rrv->maxDelays[vNodeId] = curRrMaxDelay + computeMaxRetransDelay(rsps, primLinkRetransDelayInUs, config);
 
-				rrv->expectedLossRates[vNodeId] = overV;
+				rrv->maxDelays[vNodeId] = curRrMaxDelay + computeMaxRetransDelay(rsps, NULL, primLinkRetransDelayInUs, config);
+
+				rrv->expectedLossRates[vNodeId] = F_overV;
+				ALPHAs[vNodeId] = alpha_overV;
+				GOALs[vNodeId] = all_overV;
 				q.updateKey((FHObjectPtr) &(vNode->nodeId), (FHObjectPtr) &(vNode->nodeId));
 
 				if (rsps->size() > 0)
@@ -123,8 +146,9 @@ LltcResilientRouteVectors* ResilientRouteGenerationForDRTP::genResilientRoutesVe
 				PSIs[vNodeId] = PSI;
 
 				rrv->prevNodeIdx[vNodeId] = uNode->nodeId;
-
 			}
+
+
 		}
 	}
 
@@ -139,48 +163,103 @@ ResilientRoutes* ResilientRouteGenerationForDRTP::constructResilientRoutes(LltcG
 	if (nodeIds->size() <= 1) {
 		return NULL;
 	}
+	int base_pathID = 1;
+	_nextPathID = base_pathID;
 	Path* primaryPath = new Path();
 	primaryPath->nodeIds = nodeIds;
 	primaryPath->pathID = _nextPathID++;
+
+	unordered_set<int> linkIDInPP;
+	for (size_t i = 1; i < nodeIds->size(); ++i) {
+		LltcLink* l_pp = g->getLinkByNodeIds((*nodeIds)[i - 1], (*nodeIds)[i]);
+		linkIDInPP.insert(l_pp->linkId);
+	}
+
 
 	unordered_map<int, vector<RedundantSubPath*>*>* hrsp = new unordered_map<int, vector<RedundantSubPath*>*>();
 	for (unsigned int i = 0; i < nodeIds->size(); ++i) {
 		int nodeId = (*nodeIds)[i];
 		vector<RedundantSubPath*>* rsps = rrv->rspsMap[nodeId];
-		if (rsps == NULL) continue;
+		if (rsps == NULL) {
+			(*hrsp)[nodeId] = new vector<RedundantSubPath*>();
+			continue;
+		}
+
+		vector<int> rsps_overlapped;
+		vector<int> rsps_removed;
+		size_t j = 0;
+		for (vector<RedundantSubPath*>::iterator iter = rsps->begin();
+				iter != rsps->end(); ++iter) {
+			RedundantSubPath* rsp_uNode = *iter;
+			vector<int>* nodeIds = rsp_uNode->path->nodeIds;
+			bool isLinkInRSP = false;
+			for (int m = 1; m < nodeIds->size() - 1; ++m) {
+				LltcLink* e_RSP = g->getLinkByNodeIds((*nodeIds)[m - 1], (*nodeIds)[m]);
+				if (linkIDInPP.find(e_RSP->linkId) != linkIDInPP.end()) {
+					isLinkInRSP = true;
+					break;
+				}
+			}
+
+			if (isLinkInRSP) {
+				rsps_overlapped.push_back(j);
+			}
+
+
+			rsp_uNode->path->pathID = _nextPathID++;
+			++j;
+		}
+
+		for (vector<int>::reverse_iterator iter = rsps_overlapped.rbegin(); iter != rsps_overlapped.rend(); ++iter) {
+			//rsps->erase(rsps->begin() + *iter);
+		}
+
+
 		(*hrsp)[nodeId] = rsps;
 	}
 
-	ResilientRoutes* rr = new ResilientRoutes(primaryPath, hrsp);
-	rr->expectedRrLossRate = rrv->expectedLossRates[dstNodeId];
-	rr->maxRrDelay = rrv->maxDelays[dstNodeId];
-	rr->primPathDelay = rrv->maxPrimPathDelays[dstNodeId];
 
-	if (rr->maxRrDelay > config->maxPathDelay) {
-		rr->maxRrDelay = pruningResilientRoutes(g, rr, config);
-		rr->expectedRrLossRate = computeResilientRouteEEFR(g, rr, config);
+	ResilientRoutes* rr = new ResilientRoutes(primaryPath, hrsp);
+
+	computeRetranTimes(g, rr);
+	rr->maxRrDelay = computeResilientRouteEEDT_N_InStep(g, rr, config);
+	rr->expectedRrLossRate = computeResilientRouteEEFR(g, rr, config);
+
+	if (LltcConfig::LLTC_DISABLE_RETRAN) {
+		for (unsigned int i = 1; i < nodeIds->size(); ++i) {
+			vector<RedundantSubPath*>* rsps = rr->getRSPsByNodeId((*nodeIds)[i]);
+
+		}
 	}
 
+	return rr;
+}
+
+void ResilientRouteGenerationForDRTP::computeRetranTimes(LltcGraph* g, ResilientRoutes* rr) {
+	Path* primaryPath = rr->primaryPath;
+	unordered_map<int, vector<RedundantSubPath*>*>* hrsp = rr->getHRSP();
+	vector<int>* nodeIds = primaryPath->nodeIds;
 	size_t n = nodeIds->size();
 	int maxCulQueueTimesInUs[n];
 	for (size_t i = 0; i < n; ++i) maxCulQueueTimesInUs[i] = 0;
 
 	(*rr->retransTimeouts)[0] = 0;
 	int culQueueTimeInUs = 0;
+	rr->primPathDelay = 0;
 	for (unsigned int i = 1; i < nodeIds->size(); ++i) {
 		LltcLink* l = g->getLinkByNodeIds((*nodeIds)[i - 1], (*nodeIds)[i]);
 		culQueueTimeInUs += g->getLinkDelayQueue(l, (*nodeIds)[i - 1], (*nodeIds)[i]);
+		rr->primPathDelay += g->getLinkDelayTotal(l, (*nodeIds)[i - 1], (*nodeIds)[i]);
 		maxCulQueueTimesInUs[i] = culQueueTimeInUs;
 
 		int nodeId = (*nodeIds)[i];
-		vector<RedundantSubPath*>* rsps = rrv->rspsMap[nodeId];
+		vector<RedundantSubPath*>* rsps = (*hrsp)[nodeId];
 		if (rsps == NULL || rsps->size() == 0) continue;
 		int maxTimeoutForRetrans = -1;
 		for (RedundantSubPath* rsp : *rsps) {
 			if (rsp->retransDelayInMultiTimes > maxTimeoutForRetrans) {
 				maxTimeoutForRetrans = rsp->retransDelayInMultiTimes;
 			}
-			rsp->path->pathID = _nextPathID++;
 		}
 		(*rr->retransTimeouts)[i] = maxTimeoutForRetrans;
 	}
@@ -188,11 +267,16 @@ ResilientRoutes* ResilientRouteGenerationForDRTP::constructResilientRoutes(LltcG
 	(*rr->waitingTimeoutOnNextPacketInUs)[0] = 0;
 	(*rr->waitingTimeoutOnNextPacketForLostReportInUs)[0] = 0;
 	int culRetransTimeout = 0;
+	int maxPrimPathDelays = 0;
 	for (unsigned int i = 1; i < nodeIds->size(); ++i) {
 		culRetransTimeout += (*rr->retransTimeouts)[i - 1];
 
 		(*rr->waitingTimeoutOnNextPacketInUs)[i] = maxCulQueueTimesInUs[i];
-		(*rr->waitingTimeoutOnNextPacketForLostReportInUs)[i] = rrv->maxPrimPathDelays[(*nodeIds)[i]] + culRetransTimeout;
+		LltcLink* e = g->getLinkByNodeIds((*nodeIds)[i - 1], (*nodeIds)[i]);
+		maxPrimPathDelays += e->abDelay_total;
+
+		(*rr->waitingTimeoutOnNextPacketForLostReportInUs)[i] = maxPrimPathDelays +
+											culRetransTimeout;
 								//(double) ((*rr->retransTimeouts)[i]) * (1.0 / (double) config->numRetransRequests);
 
 		int culRetransTimeoutAtNodeJ = 0;
@@ -204,14 +288,7 @@ ResilientRoutes* ResilientRouteGenerationForDRTP::constructResilientRoutes(LltcG
 	}
 
 
-	if (LltcConfig::LLTC_DISABLE_RETRAN) {
-		for (unsigned int i = 1; i < nodeIds->size(); ++i) {
-			vector<RedundantSubPath*>* rsps = rr->getRSPsByNodeId((*nodeIds)[i]);
 
-		}
-	}
-
-	return rr;
 }
 
 
@@ -396,9 +473,13 @@ vector<int>* ResilientRouteGenerationForDRTP::convertPrevArrayToPathNodeIdsArray
 }
 
 
-double ResilientRouteGenerationForDRTP::computePHI(LltcLink* e, LltcNode* uNode, LltcNode* vNode, vector<RedundantSubPath*>* rsps, int numRetransRequests) {
+double ResilientRouteGenerationForDRTP::computePHI(LltcLink* e, LltcNode* uNode, LltcNode* vNode,
+					vector<RedundantSubPath*>* rsps, unordered_set<RedundantSubPath*>* rsps_invalid, int numRetransRequests) {
 	double r = 1.0;
 	for (RedundantSubPath* rsp : *rsps) {
+		if (rsps_invalid != NULL && rsps_invalid->find(rsp) == rsps_invalid->end()) {
+			continue;
+		}
 		r *= rsp->dataDeliveryLossRate;
 	}
 	double uvRelia = LltcGraph::getLinkRelia(e, uNode, vNode, false);
@@ -495,9 +576,14 @@ double ResilientRouteGenerationForDRTP::computePmuPiatDriftRange(double freq, do
 	return  (double) maxConsecutiveDriftPackets * 2 * freqDriftRatio * (1000000.0 / freq) / (1 - freqDriftRatio * freqDriftRatio);
 }
 
-double ResilientRouteGenerationForDRTP::computeMaxRetransDelay(vector<RedundantSubPath*>* rsps, int primRetransDelayInUs, LltcConfiguration* config) {
+double ResilientRouteGenerationForDRTP::computeMaxRetransDelay(vector<RedundantSubPath*>* rsps,
+		unordered_set<RedundantSubPath*>* rsps_invalid,
+		int primRetransDelayInUs, LltcConfiguration* config) {
 	double maxRetransDelay = (double) primRetransDelayInUs;
 	for (RedundantSubPath* sp : *rsps) {
+		if (rsps_invalid != NULL && rsps_invalid->find(sp) != rsps_invalid->end()) {
+			continue;
+		}
 		if (sp->retransDelayInMultiTimes > maxRetransDelay) {
 			maxRetransDelay = sp->retransDelayInMultiTimes;
 		}
@@ -547,7 +633,7 @@ double ResilientRouteGenerationForDRTP::computeResilientRouteEEFR(LltcGraph* g, 
 
 		vector<RedundantSubPath*>* rsps = rr->getRSPsByNodeId(vNodeId);
 		if (rsps != NULL) {
-			PHI = this->computePHI(e, uNode, vNode, rsps, config->numRetransRequests);
+			PHI = this->computePHI(e, uNode, vNode, rsps, NULL, config->numRetransRequests);
 		} else {
 			double uvRelia = LltcGraph::getLinkRelia(e, uNode, vNode, false);
 			double vuRelia = LltcGraph::getLinkRelia(e, vNode, uNode, false);
@@ -738,6 +824,19 @@ string* ResilientRoutes::toString() {
 	stringstream ss;
 	ss << "Resilient Routes Dump: \n" << *(primaryPath->toString()) + "\n";
 
+	unsigned int n = primaryPath->nodeIds->size();
+	for (unsigned int i = 0; i < n; ++i) {
+		int nodeId = (*primaryPath->nodeIds)[i];
+
+		if ((*hrsp).find(nodeId) != hrsp->end()) {
+			ss << "--> " << nodeId << ": \n";
+			vector<RedundantSubPath*>* rsps = (*hrsp)[nodeId];
+			for (RedundantSubPath* rsp : *rsps) {
+				ss << "\t" << *(rsp->toString()) << "\n";
+			}
+		}
+	}
+	/*
 	for (unordered_map<int, vector<RedundantSubPath*>*>::iterator iter = hrsp->begin(); iter != hrsp->end(); ++iter) {
 		ss << "--> " << iter->first << ": \n";
 		vector<RedundantSubPath*>* rsps = iter->second;
@@ -745,9 +844,40 @@ string* ResilientRoutes::toString() {
 		for (RedundantSubPath* rsp : *rsps) {
 			ss << "\t" << *(rsp->toString()) << "\n";
 		}
-	}
+	}*/
 
 	ss << "RR loss rate: " << expectedRrLossRate << ", maxPathDelay: " << maxRrDelay << "\n";
+
+
+	ss << "retransTimeouts: " << endl;
+	for (unsigned int i = 0; i < n; ++i) {
+		ss << to_string((*retransTimeouts)[i]) << (i < n - 1 ? ", " : "");
+	}
+	ss << endl;
+
+	ss << "waitingTimeoutOnNextPacketInUs: " << endl;
+	for (unsigned int i = 0; i < n; ++i) {
+		ss << to_string((*waitingTimeoutOnNextPacketInUs)[i]) << (i < n - 1 ? ", " : "");
+	}
+	ss << endl;
+
+	ss << "waitingTimeoutOnNextPacketForLostReportInUs: " << endl;
+	for (unsigned int i = 0; i < n; ++i) {
+		ss << to_string((*waitingTimeoutOnNextPacketForLostReportInUs)[i]) << (i < n - 1 ? ", " : "");
+	}
+	ss << endl;
+
+	ss << "waitingTimeoutOnRetransReportInUs: " << endl;
+	for (unsigned int i = 0; i < n; ++i) {
+		unordered_map<int, int>* item = waitingTimeoutOnRetransReportInUs[i];
+		ss << "--> " << (*primaryPath->nodeIds)[i] << ": ";
+		for (unordered_map<int, int>::iterator iter = item->begin(); iter != item->end(); ++iter) {
+			ss << "(" << iter->first << ", " << iter->second << "), ";
+		}
+		ss << endl;
+	}
+	ss << endl;
+
 	string *s = new string(ss.str());
 	return s;
 }
@@ -755,13 +885,14 @@ string* ResilientRoutes::toString() {
 
 
 LltcConfiguration::LltcConfiguration(int numRetransRequests, int beta, double pmuFreq, double maxDriftRatioForPmuFreq,
-		int maxConsecutiveDriftPackets, double maxPathDelay) {
+		int maxConsecutiveDriftPackets, double maxPathDelay, int numDataRetransReportsToSend) {
 	this->numRetransRequests = numRetransRequests;
 	this->beta = beta;
 	this->pmuFreq = pmuFreq;
 	this->maxDriftRatioForPmuFreq = maxDriftRatioForPmuFreq;
 	this->maxConsecutiveDriftPackets = maxConsecutiveDriftPackets;
 	this->maxPathDelay = maxPathDelay;
+	this->numDataRetransReportsToSend = numDataRetransReportsToSend;
 }
 
 LltcResilientRouteVectors::LltcResilientRouteVectors(int srcNodeId, int n) {

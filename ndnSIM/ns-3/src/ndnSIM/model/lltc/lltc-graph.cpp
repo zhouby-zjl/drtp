@@ -67,6 +67,7 @@ bool LltcGraph::loadFromIEEEDataFile(string* filePath, bool isRandom, double rel
 	ifs.open(*filePath);
 	if (!ifs.is_open()) {
 		cerr << "open file err" << endl;
+		cerr << "Error: " << strerror(errno) << endl;
 		return false;
 	}
 
@@ -248,6 +249,7 @@ bool LltcGraph::loadFromCSVDataFile(string* filePath, bool isRandom, double reli
 	ifs.open(*filePath);
 	if (!ifs.is_open()) {
 		cerr << "open file err" << endl;
+		cerr << "Error: " << strerror(errno) << endl;
 		return false;
 	}
 
@@ -398,6 +400,15 @@ LltcLink* LltcGraph::getLink(LltcNode* a, LltcNode* b) {
 	for (LltcLink* e : *a->eLinks) {
 		if (e->nodeB->nodeId == nodeBId || e->nodeA->nodeId == nodeBId) {
 			return e;
+		}
+	}
+	return NULL;
+}
+
+LltcLink* LltcGraph::getLinkByID(int linkID) {
+	for (vector<LltcLink*>::iterator iter = this->links->begin(); iter != this->links->end(); ++iter) {
+		if ((*iter)->linkId == linkID) {
+			return *iter;
 		}
 	}
 	return NULL;

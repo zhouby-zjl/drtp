@@ -160,7 +160,8 @@ int main(int argc, char** argv) {
 	// PMU terminal configuration
 	LltcConfiguration* config = new LltcConfiguration(LltcConfig::LLTC_NUM_RETRANS_REQUESTS, LltcConfig::LLTC_BETA,
 			LltcConfig::NETWORK_PMU_DATA_FREQ, LltcConfig::LLTC_MAX_DRIFT_RANGE_RATIO_FOR_PMU_FREQ,
-			LltcConfig::LLTC_MAX_CONSECUTIVE_DRIFT_PACKETS, LltcConfig::LLTC_MAX_PATH_DELAY_US);
+			LltcConfig::LLTC_MAX_CONSECUTIVE_DRIFT_PACKETS, LltcConfig::LLTC_MAX_PATH_DELAY_US,
+			LltcConfig::LLTC_NUM_DATA_RETRANS_REPORTS_TO_SEND);
 
 	// data plane configuration
 	uint64_t intervalTimeForCheckPathQosInUs = (LltcConfig::NETWORK_NODE_PROCESS_DELAY_US + LltcConfig::NETWORK_LINK_QUEUE_DELAY_US
