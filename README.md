@@ -1,16 +1,5 @@
 # A Disruption Resilient Transport Protocol (DRTP) for Synchrophasors Measurement in Transmission Grids
 
- *********************************************************************************
-This work is licensed under CC BY-NC-SA 4.0
-(https://creativecommons.org/licenses/by-nc-sa/4.0/).
-
-Copyright (c) 2021-2023 Boyang Zhou @ Zhejiang Lab
-
-This file is a part of "Disruption Resilient Transport Protocol"
-(https://github.com/zhouby-zjl/drtp/).
-
-This software is protected by the patents as well as the software copyrights.
- **********************************************************************************
 
  ## Publications
 **[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)**
@@ -39,6 +28,19 @@ The DRTP is currently in the prototype stage which is comprehensively tested und
    - a Dijkstra based algorithm to generate multi-path subgraph (GenMPSG). You can run: ./waf --run scratch/drtp-sim-static-dijkstra --command-template="%s drtp-config-dijkstra.ini". 
    - HeuMPSG. To test HeuMPSG with DRTP, you can run:  ./waf --run scratch/drtp-sim-static-optmpsg --command-template="%s drtp-config-heumpsg.ini". To only test HeuMPSG, you can run: ./waf --run scratch/drtp-sim-static-optmpsg-cp --command-template="%s drtp-config-heumpsg-cp.ini"
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the above ini file.
+
+
+ *********************************************************************************
+This work is licensed under CC BY-NC-SA 4.0
+(https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+Copyright (c) 2021-2023 Boyang Zhou @ Zhejiang Lab
+
+This file is a part of "Disruption Resilient Transport Protocol"
+(https://github.com/zhouby-zjl/drtp/).
+
+This software is protected by the patents as well as the software copyrights.
+ **********************************************************************************
 
 
  **********************************************************************************
