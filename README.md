@@ -11,7 +11,14 @@ This file is a part of "Disruption Resilient Transport Protocol"
 
 This software is protected by the patents as well as the software copyrights.
  **********************************************************************************
- 
+
+ ## Publications
+[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)
+
+[2] Boyang Zhou. Reliable Resilient Router for Wide-Area Phasor Measurement System for Power Grid. PCT DF214063US. 2022. (issued)
+
+[3] Boyang Zhou. Resilient Route Generation System for Reliable Communication in Power Grid Phasor Measurement System. DF220483US. 2022. (publication)
+
 
 ## What is the DRTP? 
 In a modern electric power transmission grid, the phasor measurement unit requires a reliable transport of its sampled statistics with a low end-to-end failure rate (EEFR) to ensure the accuracy of the grid state estimation. However, EEFR can be deteriorated by packet losses due to multiple link disruptions in the primary forwarding path (PP). To address that, we investigate a novel disruption resilient transport protocol (DRTP) enabling hop-by-hop retransmission utilizing the redundant subpaths (RSPs) available for the PP to increase reliability. It addresses the new distributed collaboration issue under multiple link failures to avoid cache mismatching. These have not been considered by the existing approaches. The DRTP was evaluated in the ndnSIM simulator through both the typical and general routes that are constructed from real transmission grids. The numerical results demonstrate that it has a significant advantage in reducing the EEFR with a low end-to-end delivery time under serious link disruptions.
@@ -33,12 +40,6 @@ The DRTP is currently in the prototype stage which is comprehensively tested und
    - HeuMPSG. To test HeuMPSG with DRTP, you can run:  ./waf --run scratch/drtp-sim-static-optmpsg --command-template="%s drtp-config-heumpsg.ini". To only test HeuMPSG, you can run: ./waf --run scratch/drtp-sim-static-optmpsg-cp --command-template="%s drtp-config-heumpsg-cp.ini"
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the above ini file.
 
-## Publications
-[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)
-
-[2] Boyang Zhou. Reliable Resilient Router for Wide-Area Phasor Measurement System for Power Grid. PCT DF214063US. 2022. (issued)
-
-[3] Boyang Zhou. Resilient Route Generation System for Reliable Communication in Power Grid Phasor Measurement System. DF220483US. 2022. (publication)
 
  **********************************************************************************
 We are looking forward to new project opportunity in making the DRTP growing up. 
