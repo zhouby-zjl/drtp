@@ -13,7 +13,7 @@ This software is protected by the patents as well as the software copyrights.
  **********************************************************************************
 
  ## Publications
-[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)
+**[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)**
 
 [2] Boyang Zhou. Reliable Resilient Router for Wide-Area Phasor Measurement System for Power Grid. PCT DF214063US. 2022. (issued)
 
