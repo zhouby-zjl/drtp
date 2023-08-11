@@ -25,6 +25,8 @@ Compared to GenMPSG, a new Heuristic MPSG Generation Algorithm (HeuMPSG) can imp
 [3] Boyang Zhou. Resilient Route Generation System for Reliable Communication in Power Grid Phasor Measurement System. DF220483US. 2022. (publication)
 
 
+We are looking forward to new project opportunity in making the DRTP growing up. 
+
  *********************************************************************************
 This work is licensed under CC BY-NC-SA 4.0
 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
@@ -36,7 +38,3 @@ This file is a part of "Disruption Resilient Transport Protocol"
 
 This software is protected by the patents as well as the software copyrights.
  **********************************************************************************
-
-
- **********************************************************************************
-We are looking forward to new project opportunity in making the DRTP growing up. 
