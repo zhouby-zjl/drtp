@@ -14,9 +14,6 @@ The DRTP is currently in the prototype stage which is comprehensively tested und
    - A Dijkstra based algorithm to generate multi-path subgraph (GenMPSG). You can run: ./waf --run scratch/drtp-sim-static-dijkstra --command-template="%s drtp-config-dijkstra.ini". 
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the above ini file.
 
-## Other Available MPSG Generation Algorithm 
-Compared to GenMPSG, a new Heuristic MPSG Generation Algorithm (HeuMPSG) can improve the DRTP resilience, which is available in https://github.com/zhouby-zjl/heumpsg/
-
  ## Publications
 **[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)**
 
