@@ -1,10 +1,7 @@
-# A Disruption Resilient Transport Protocol (DRTP) for Synchrophasors Measurement in Transmission Grids
+# The Source Code of Resilient Sensor Data Dissemination Mechanism (RSSD) Implementing Disruption Resilient Transport Protocol (DRTP) for Synchrophasors Measurements in Power Transmission Grids
 
-## What is the DRTP? 
-In a modern electric power transmission grid, the phasor measurement unit requires a reliable transport of its sampled statistics with a low end-to-end failure rate (EEFR) to ensure the accuracy of the grid state estimation. However, EEFR can be deteriorated by packet losses due to multiple link disruptions in the primary forwarding path (PP). To address that, we investigate a novel disruption resilient transport protocol (DRTP) enabling hop-by-hop retransmission utilizing the redundant subpaths (RSPs) available for the PP to increase reliability. It addresses the new distributed collaboration issue under multiple link failures to avoid cache mismatching. These have not been considered by the existing approaches. The DRTP was evaluated in the ndnSIM simulator through both the typical and general routes that are constructed from real transmission grids. The numerical results demonstrate that it has a significant advantage in reducing the EEFR with a low end-to-end delivery time under serious link disruptions.
-
-## What is the status of the DRTP?
-The DRTP is currently in the prototype stage which is comprehensively tested under the IEEE 300 bus dataset and South Carolina 500-bus dataset with an sigfinicantly reduced EEFR performance. We are looking forward to implement into a real router in the future.
+## What are the RSDD and DRTP? 
+In today’s power transmission grids, Internet-of-Things networks employ long-haul optical wires for regular sensor data dissemination to a server. Ensuring resilience against link faults is paramount to observe the grid states accurately via a process known as state estimation (SE). The accuracy is achieved by minimizing the end-to-end failure rate in packet delivery (EEFR). Current approaches focus on hop-by-hop retransmission control with in-path caching. Notably, the disruption-resilient transport protocol (DRTP) stands out for achieving the lowest EEFR. DRTP employs robust hop-by-hop retransmission and a recursive collaboration process guided by arrival timeouts. However, challenges arise in maintaining recursiveness with timeouts, leading to increased EEFR due to cache mismatch. These intensify when a hop triggers arrival timeouts, spawning retransmission instances in an unexpected sequence, which can experience an unprotected parallel race condition. To address this, we propose RSDD, a resilient mechanism for sensor data dissemination for implementing DRTP in the correct and fully verified manner. RSDD orchestrates concurrent retransmission instances, ensuring exclusive execution for the same lost packet, precisely scheduled based on timeouts. We evaluated the performance of RSDD in a simulated network that combines SE and a grid, using ndnSIM, MATPOWER, and RTDS. The results validate RSDD as a correct DRTP implementation, highlighting its exclusiveness and quality-of-service performance. RSDD achieves an EEFR of 2.44% and an average end-to-end packet delivery time (EEDT) of 2.7 ms during full path disruption with a 20% link loss rate in packets. Moreover, RSDD excels in enabling SE to maintain the grid observability and accuracy. 
 
 ## How do I run the source code?
 1. You need to download both the DRTP from github and the recent ndnSIM from https://ndnsim.net/current/. 
@@ -15,14 +12,16 @@ The DRTP is currently in the prototype stage which is comprehensively tested und
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the above ini file.
 
  ## Publications
-**[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)**
+[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)** (This paper deeply introduces DRTP in its concept and collaboration sequences)
 
-[2] Boyang Zhou. Reliable Resilient Router for Wide-Area Phasor Measurement System for Power Grid. PCT DF214063US. 2022. (issued)
+[2] Boyang Zhou, Ye Tong, Yinghui Nie, Chunming Wu, Wenjie Yu. Generating Routes Less Fragile to Improve Disruption-Resilient Transport Protocol for Phasor Data in Optical IoT Networks of Power Transmission Grids. IEEE ICPADS 2023. (The paper has been accepted to be presented soon. This paper studies on how to optimize the underlying routes of DRTP for a better resilience.)
 
-[3] Boyang Zhou. Resilient Route Generation System for Reliable Communication in Power Grid Phasor Measurement System. DF220483US. 2022. (publication)
+[3] Boyang Zhou. Reliable Resilient Router for Wide-Area Phasor Measurement System for Power Grid. PCT DF214063US. 2022. (issued)
+
+[4] Boyang Zhou. Resilient Route Generation System for Reliable Communication in Power Grid Phasor Measurement System. DF220483US. 2022. (publication)
 
 
-We are looking forward to new project opportunity in making the DRTP growing up. 
+We are looking forward to new project opportunity in making the RSDD and DRTP growing up. 
 
  *********************************************************************************
 This work is licensed under CC BY-NC-SA 4.0
@@ -30,7 +29,7 @@ This work is licensed under CC BY-NC-SA 4.0
 
 Copyright (c) 2021-2023 Boyang Zhou @ Zhejiang Lab
 
-This file is a part of "Disruption Resilient Transport Protocol"
+This file is a part of "Resilient Sensor Data Dissemination Mechanism" and "Disruption Resilient Transport Protocol"
 (https://github.com/zhouby-zjl/drtp/).
 
 This software is protected by the patents as well as the software copyrights.
