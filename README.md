@@ -12,13 +12,15 @@ In today’s power transmission grids, Internet-of-Things networks employ long-h
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the above ini file.
 
  ## Publications
-[1] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)** (This paper deeply introduces DRTP in its concept and collaboration sequences)
+[1] Boyang Zhou, Chunming Wu, Qiang Yang, Yaguan Qian and Yinghui Nie, "Resilient Sensor Data Dissemination to Mitigate Link Faults in IoT Networks with Long-Haul Optical Wires for Power Transmission Grids," in IEEE Internet-of-Things Journal, Jan. 2014. (accepted and to be appear soon. This paper presents RSDD in detail with concrete design in state transition machines and correctness verfication). 
+ 
+[2] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)** (This paper deeply introduces DRTP in its concept and collaboration sequences)
 
-[2] Boyang Zhou, Ye Tong, Yinghui Nie, Chunming Wu, Wenjie Yu. Generating Routes Less Fragile to Improve Disruption-Resilient Transport Protocol for Phasor Data in Optical IoT Networks of Power Transmission Grids. IEEE ICPADS 2023. (The paper has been accepted to be presented soon. This paper studies on how to optimize the underlying routes of DRTP for a better resilience.)
+[3] Boyang Zhou, Ye Tong, Yinghui Nie, Chunming Wu, Wenjie Yu. Generating Routes Less Fragile to Improve Disruption-Resilient Transport Protocol for Phasor Data in Optical IoT Networks of Power Transmission Grids. IEEE ICPADS 2023. (The paper has been accepted to be presented soon. This paper studies on how to optimize the underlying routes of DRTP for a better resilience.)
 
-[3] Boyang Zhou. Reliable Resilient Router for Wide-Area Phasor Measurement System for Power Grid. PCT DF214063US. 2022. (issued)
+[4] Boyang Zhou. Reliable Resilient Router for Wide-Area Phasor Measurement System for Power Grid. PCT DF214063US. 2022. (issued)
 
-[4] Boyang Zhou. Resilient Route Generation System for Reliable Communication in Power Grid Phasor Measurement System. DF220483US. 2022. (publication)
+[5] Boyang Zhou. Resilient Route Generation System for Reliable Communication in Power Grid Phasor Measurement System. DF220483US. 2022. (publication)
 
 
 We are looking forward to new project opportunity in making the RSDD and DRTP growing up. 
@@ -27,7 +29,7 @@ We are looking forward to new project opportunity in making the RSDD and DRTP gr
 This work is licensed under CC BY-NC-SA 4.0
 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-Copyright (c) 2021-2023 Boyang Zhou @ Zhejiang Lab
+Copyright (c) 2021-2024 Boyang Zhou @ Zhejiang Lab
 
 This file is a part of "Resilient Sensor Data Dissemination Mechanism" and "Disruption Resilient Transport Protocol"
 (https://github.com/zhouby-zjl/drtp/).
