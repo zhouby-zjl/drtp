@@ -12,7 +12,7 @@ In today’s power transmission grids, Internet-of-Things networks employ long-h
 5. Afterwards, you can find the simulation results under the SIM_LOG_DIR directory defined in the above ini file.
 
  ## Publications
-[1] Boyang Zhou, Chunming Wu, Qiang Yang, Yaguan Qian and Yinghui Nie, "Resilient Sensor Data Dissemination to Mitigate Link Faults in IoT Networks with Long-Haul Optical Wires for Power Transmission Grids," in IEEE Internet-of-Things Journal, Jan. 2014. (accepted and to be appear soon. This paper presents RSDD in detail with concrete design in state transition machines and correctness verfication). 
+[1] Boyang Zhou, Chunming Wu, Qiang Yang, Yaguan Qian and Yinghui Nie, "Resilient Sensor Data Dissemination to Mitigate Link Faults in IoT Networks with Long-Haul Optical Wires for Power Transmission Grids," in IEEE Internet-of-Things Journal, Jan. 2014. (Download: https://ieeexplore.ieee.org/document/10398482/. This paper presents RSDD in detail with concrete design in state transition machines and correctness verfication). 
  
 [2] Boyang Zhou, Chunming Wu, Qiang Yang and Xiang Chen, "DRTP: A Disruption Resilient Hop-by-Hop Transport Protocol for Synchrophasors Measurement in Electric Transmission Grids," in IEEE Access, vol. 10, pp. 133898-133914, 2022, doi: 10.1109/ACCESS.2022.3232557. (download: https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9999427)** (This paper deeply introduces DRTP in its concept and collaboration sequences)
 
